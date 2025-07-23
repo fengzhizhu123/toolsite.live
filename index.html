@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的工具导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+        }
+
+        .search-bar {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .search-input {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 1.1rem;
+            placeholder-color: rgba(255,255,255,0.7);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+
+        .categories {
+            display: grid;
+            gap: 30px;
+        }
+
+        .category {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        .category h2 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-icon {
+            font-size: 2rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .tool-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 20px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .tool-card:hover::before {
+            left: 100%;
+        }
+
+        .tool-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .tool-url {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            word-break: break-all;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 我的工具导航</h1>
+            <p>精选实用工具，提升工作效率</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="搜索工具..." id="searchInput">
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number" id="totalTools">16</span>
+                <span class="stat-label">个工具</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="totalCategories">6</span>
+                <span class="stat-label">个分类</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="visitedToday">0</span>
+                <span class="stat-label">今日访问</span>
+            </div>
+        </div>
+
+        <div class="categories">
+            <div class="category" data-category="seo">
+                <h2><span class="category-icon">📈</span>SEO与营销工具</h2>
+                <div class="tools-grid">
+                    <a href="https://www.searchsuggest.tips/" class="tool-card" data-name="谷歌下拉词">
+                        <span class="tool-name">谷歌下拉词</span>
+                        <span class="tool-url">searchsuggest.tips</span>
+                    </a>
+                    <a href="https://ahrefs.com/keyword-difficulty" class="tool-card" data-name="关键词难度">
+                        <span class="tool-name">关键词难度</span>
+                        <span class="tool-url">ahrefs.com</span>
+                    </a>
+                    <a href="https://www.similarsites.com/" class="tool-card" data-name="网站替代品探索">
+                        <span class="tool-name">网站替代品探索</span>
+                        <span class="tool-url">similarsites.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category" data-category="ai">
+                <h2><span class="category-icon">🤖</span>AI工具与导航</h2>
+                <div class="tools-grid">
+                    <a href="https://www.toolify.ai/Best-AI-Tools-revenue" class="tool-card" data-name="Toolify榜单">
+                        <span class="tool-name">Toolify榜单</span>
+                        <span class="tool-url">toolify.ai</span>
+                    </a>
+                    <a href="https://theresanaiforthat.com/requests" class="tool-card" data-name="AI导航站需求">
+                        <span class="tool-name">AI导航站需求</span>
+                        <span class="tool-url">theresanaiforthat.com</span>
+                    </a>
+                    <a href="https://ai-bot.cn/" class="tool-card" data-name="AI工具集">
+                        <span class="tool-name">AI工具集</span>
+                        <span class="tool-url">ai-bot.cn</span>
+                    </a>
+                    <a href="https://imagetoprompt.org/" class="tool-card" data-name="图片转提示词">
+                        <span class="tool-name">图片转提示词</span>
+                        <span class="tool-url">imagetoprompt.org</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category" data-category="education">
+                <h2><span class="category-icon">📚</span>教育学习工具</h2>
+                <div class="tools-grid">
+                    <a href="https://www.laoshibang.com/home/index#/?utm_source=ai-bot.cn" class="tool-card" data-name="老师帮">
+                        <span class="tool-name">老师帮</span>
+                        <span class="tool-url">laoshibang.com</span>
+                    </a>
+                    <a href="https://www.shijuan1.com/" class="tool-card" data-name="第一试卷网">
+                        <span class="tool-name">第一试卷网</span>
+                        <span class="tool-url">shijuan1.com</span>
+                    </a>
+                    <a href="https://www.kiddoworksheets.com/" class="tool-card" data-name="作业纸生成">
+                        <span class="tool-name">作业纸生成</span>
+                        <span class="tool-url">kiddoworksheets.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category" data-category="design">
+                <h2><span class="category-icon">🎨</span>设计素材工具</h2>
+                <div class="tools-grid">
+                    <a href="https://clipso.agilestudio.cn/" class="tool-card" data-name="素材SoSo">
+                        <span class="tool-name">素材SoSo - 免版权素材</span>
+                        <span class="tool-url">clipso.agilestudio.cn</span>
+                    </a>
+                    <a href="https://jiandan.link/" class="tool-card" data-name="在线设计工具">
+                        <span class="tool-name">在线设计工具</span>
+                        <span class="tool-url">jiandan.link</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category" data-category="entertainment">
+                <h2><span class="category-icon">🎮</span>娱乐休闲</h2>
+                <div class="tools-grid">
+                    <a href="https://classicjoy.games/zh" class="tool-card" data-name="经典乐园">
+                        <span class="tool-name">经典乐园 - 复古游戏</span>
+                        <span class="tool-url">classicjoy.games</span>
+                    </a>
+                    <a href="https://miru.js.org/" class="tool-card" data-name="Miru">
+                        <span class="tool-name">Miru</span>
+                        <span class="tool-url">miru.js.org</span>
+                    </a>
+                    <a href="https://drivenlisten.com/" class="tool-card" data-name="在线世界旅游">
+                        <span class="tool-name">在线世界旅游神器</span>
+                        <span class="tool-url">drivenlisten.com</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="category" data-category="utility">
+                <h2><span class="category-icon">🛠️</span>实用工具</h2>
+                <div class="tools-grid">
+                    <a href="https://www.emailtick.com/" class="tool-card" data-name="随机谷歌邮箱">
+                        <span class="tool-name">随机谷歌邮箱</span>
+                        <span class="tool-url">emailtick.com</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 搜索功能
+        const searchInput = document.getElementById('searchInput');
+        const toolCards = document.querySelectorAll('.tool-card');
+        const categories = document.querySelectorAll('.category');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            toolCards.forEach(card => {
+                const toolName = card.dataset.name.toLowerCase();
+                const toolUrl = card.querySelector('.tool-url').textContent.toLowerCase();
+                const matches = toolName.includes(searchTerm) || toolUrl.includes(searchTerm);
+                
+                if (matches || searchTerm === '') {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // 隐藏没有可见工具的分类
+            categories.forEach(category => {
+                const visibleTools = category.querySelectorAll('.tool-card:not([style*="display: none"])');
+                if (visibleTools.length === 0 && searchTerm !== '') {
+                    category.style.display = 'none';
+                } else {
+                    category.style.display = 'block';
+                }
+            });
+        });
+
+        // 点击统计
+        let visitedToday = parseInt(localStorage.getItem('visitedToday') || '0');
+        const today = new Date().toDateString();
+        const lastVisitDate = localStorage.getItem('lastVisitDate');
+
+        if (lastVisitDate !== today) {
+            visitedToday = 0;
+            localStorage.setItem('lastVisitDate', today);
+        }
+
+        document.getElementById('visitedToday').textContent = visitedToday;
+
+        toolCards.forEach(card => {
+            card.addEventListener('click', function() {
+                visitedToday++;
+                localStorage.setItem('visitedToday', visitedToday.toString());
+                document.getElementById('visitedToday').textContent = visitedToday;
+            });
+        });
+
+        // 添加键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                searchInput.focus();
+            }
+        });
+    </script>
+</body>
+</html>
